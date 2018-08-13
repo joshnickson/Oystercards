@@ -16,11 +16,11 @@ describe "Oystercard feature tests" do
     card_enforces_maximum_balance
   end
 
-  it "deducts fare from card balance" do
-    given_a_user_has_a_new_card
-    and_the_card_has_been_topped_up
-    a_fare_can_be_deducted_from_balance
-  end
+  # it "deducts fare from card balance" do
+  #   given_a_user_has_a_new_card
+  #   and_the_card_has_been_topped_up
+  #   a_fare_can_be_deducted_from_balance
+  # end
 
   it "records when card has been touched in" do
     given_a_user_has_a_new_card
@@ -40,6 +40,13 @@ describe "Oystercard feature tests" do
   it "refuses touch in if insufficient funds" do
     given_a_user_has_a_new_card
     it_will_not_touch_in
+  end
+
+  it "deducts minimum fare when card has been touched out" do
+    given_a_user_has_a_new_card
+    and_the_card_has_been_topped_up
+    and_card_has_been_touched_in
+    min_fare_will_be_deducted_when_touch_out
   end
 
 end
@@ -88,4 +95,8 @@ end
 
 def it_will_not_touch_in
   expect{ @oc.touch_in }.to raise_error "Insufficient funds on card (required £#{Oystercard::MINIMUM_FARE/100})"
+end
+
+def min_fare_will_be_deducted_when_touch_out
+  expect { @oc.touch_out }.to change{ @oc.balance }.by(-Oystercard::MINIMUM_FARE)
 end
