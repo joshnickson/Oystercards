@@ -24,15 +24,22 @@ describe "Oystercard feature tests" do
 
   it "records when card has been touched in" do
     given_a_user_has_a_new_card
+    and_the_card_has_been_topped_up
     and_card_has_been_touched_in
     card_will_show_as_in_use
   end
 
   it "records when card has been touched out" do
     given_a_user_has_a_new_card
+    and_the_card_has_been_topped_up
     and_card_has_been_touched_in
     and_card_has_been_touched_out
     card_will_not_show_as_in_use
+  end
+
+  it "refuses touch in if insufficient funds" do
+    given_a_user_has_a_new_card
+    it_will_not_touch_in
   end
 
 end
@@ -77,4 +84,8 @@ end
 
 def card_will_not_show_as_in_use
   expect(@oc.in_journey?).to be false
+end
+
+def it_will_not_touch_in
+  expect{ @oc.touch_in }.to raise_error "Insufficient funds on card (required £#{Oystercard::MINIMUM_FARE/100})"
 end
