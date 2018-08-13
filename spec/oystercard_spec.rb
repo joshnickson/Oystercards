@@ -14,5 +14,10 @@ describe Oystercard do
     it "allows users to add money to their oystercard" do
       expect(subject.top_up(500)).to eq 500
     end
+
+    it "enforces maximum balance limit" do
+      expect { subject.top_up(9500) }.to raise_error("Cannot top up over maximum limit (£90)")
+    end
+
   end
 end

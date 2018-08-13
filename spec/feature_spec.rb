@@ -11,6 +11,11 @@ describe "Oystercard feature tests" do
     card_can_be_topped_up_and_return_new_balance
   end
 
+  it "enforces a maximum limit on my oystercard" do
+    given_a_user_has_a_new_card
+    card_enforces_maximum_balance
+  end
+
 end
 
 def given_a_user_has_a_new_card
@@ -23,4 +28,8 @@ end
 
 def card_can_be_topped_up_and_return_new_balance
   expect(@oc.top_up(500)).to eq 500
+end
+
+def card_enforces_maximum_balance
+  expect { @oc.top_up(9500) }.to raise_error("Cannot top up over maximum limit (£90)")
 end
