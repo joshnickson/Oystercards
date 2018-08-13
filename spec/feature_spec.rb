@@ -31,5 +31,7 @@ def card_can_be_topped_up_and_return_new_balance
 end
 
 def card_enforces_maximum_balance
-  expect { @oc.top_up(9500) }.to raise_error("Cannot top up over maximum limit (£90)")
+  max_limit = Oystercard::DEFAULT_LIMIT
+  @oc.top_up(max_limit)
+  expect { @oc.top_up(1) }.to raise_error("Cannot top up over maximum limit (£90)")
 end
