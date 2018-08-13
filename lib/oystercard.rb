@@ -11,6 +11,10 @@ class Oystercard
     @balance += amount
   end
 
+  def deduct(fare) # consider adding error if takes below 0
+    @balance -= fare
+  end
+
   def check_within_limit(amount)
     @balance + amount > DEFAULT_LIMIT
   end

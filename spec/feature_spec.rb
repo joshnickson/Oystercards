@@ -16,6 +16,12 @@ describe "Oystercard feature tests" do
     card_enforces_maximum_balance
   end
 
+  it "deducts fare from card balance" do
+    given_a_user_has_a_new_card
+    and_the_card_has_been_topped_up
+    a_fare_can_be_deducted_from_balance
+  end
+
 end
 
 def given_a_user_has_a_new_card
@@ -34,4 +40,12 @@ def card_enforces_maximum_balance
   max_limit = Oystercard::DEFAULT_LIMIT
   @oc.top_up(max_limit)
   expect { @oc.top_up(1) }.to raise_error("Cannot top up over maximum limit (£90)")
+end
+
+def and_the_card_has_been_topped_up
+  @oc.top_up(1000)
+end
+
+def a_fare_can_be_deducted_from_balance
+  expect(@oc.deduct(300)).to eq 700
 end
