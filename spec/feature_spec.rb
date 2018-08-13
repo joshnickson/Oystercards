@@ -22,6 +22,19 @@ describe "Oystercard feature tests" do
     a_fare_can_be_deducted_from_balance
   end
 
+  it "records when card has been touched in" do
+    given_a_user_has_a_new_card
+    and_card_has_been_touched_in
+    card_will_show_as_in_use
+  end
+
+  it "records when card has been touched out" do
+    given_a_user_has_a_new_card
+    and_card_has_been_touched_in
+    and_card_has_been_touched_out
+    card_will_not_show_as_in_use
+  end
+
 end
 
 def given_a_user_has_a_new_card
@@ -48,4 +61,20 @@ end
 
 def a_fare_can_be_deducted_from_balance
   expect(@oc.deduct(300)).to eq 700
+end
+
+def and_card_has_been_touched_in
+  @oc.touch_in
+end
+
+def and_card_has_been_touched_out
+  @oc.touch_out
+end
+
+def card_will_show_as_in_use
+  expect(@oc.in_journey?).to be true
+end
+
+def card_will_not_show_as_in_use
+  expect(@oc.in_journey?).to be false
 end

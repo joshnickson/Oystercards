@@ -27,4 +27,20 @@ describe Oystercard do
       expect(subject.deduct(300)).to eq 700
     end
   end
+
+  describe "#touch_in" do
+    it "changes value of in_journey to true" do
+      subject.touch_in
+      expect(subject).to be_in_journey
+    end
+  end
+
+  describe "#touch_out" do
+    it "changes value of in_journey to false" do
+      subject.touch_in
+      subject.touch_out
+      expect(subject).not_to be_in_journey
+    end
+  end
+
 end
