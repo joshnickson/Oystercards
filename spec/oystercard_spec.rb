@@ -1,8 +1,5 @@
 require "oystercard"
 describe Oystercard do
-  describe "#add_money" do
-    it { is_expected.to respond_to(:add_money) }
-  end
 
   describe "#balance" do
     it { is_expected.to respond_to(:balance) }
@@ -13,4 +10,9 @@ describe Oystercard do
 
   end
 
+  describe "#add_money" do
+    it "allows users to add money to their oystercard" do
+      expect(subject.top_up(500)).to eq 500
+    end
+  end
 end
