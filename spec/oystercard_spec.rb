@@ -4,6 +4,8 @@ describe Oystercard do
   let(:max_bal)  { Oystercard::DEFAULT_LIMIT }
   let(:min_fare) { Oystercard::MINIMUM_FARE }
 
+  let(:station) { double :station }
+
   describe "#balance" do
     it { is_expected.to respond_to(:balance) }
 
@@ -33,19 +35,25 @@ describe Oystercard do
   describe "#touch_in" do
     it "changes value of in_journey to true" do
       subject.top_up(min_fare)
-      subject.touch_in
+      subject.touch_in(station)
       expect(subject).to be_in_journey
     end
     it "will not allow touch in if insufficient funds" do
-      expect{ subject.touch_in }.to raise_error "Insufficient funds on card (required £#{min_fare/100})"
+      expect{ subject.touch_in(station) }.to raise_error "Insufficient funds on card (required £#{min_fare/100})"
     end
+    it "will remember the touch in station" do
+      subject.top_up(min_fare)
+      subject.touch_in(station)
+      expect(subject.entry_station).to eq station
+    end
+
   end
 
   describe "#touch_out" do
 
     before do
       subject.top_up(min_fare)
-      subject.touch_in
+      subject.touch_in(station)
     end
 
     it "changes value of in_journey to false" do

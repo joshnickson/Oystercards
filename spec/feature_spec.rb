@@ -1,4 +1,5 @@
 require "oystercard"
+require "station"
 
 describe "Oystercard feature tests" do
   it "as a customer I want money on my card" do
@@ -24,9 +25,18 @@ describe "Oystercard feature tests" do
 
   it "records when card has been touched in" do
     given_a_user_has_a_new_card
+    and_is_in_a_station_ready_to_go
     and_the_card_has_been_topped_up
     and_card_has_been_touched_in
     card_will_show_as_in_use
+  end
+
+  it "remembers the touch in station during the journey" do
+    given_a_user_has_a_new_card
+    and_is_in_a_station_ready_to_go
+    and_the_card_has_been_topped_up
+    and_card_has_been_touched_in
+    card_will_know_the_touch_in_station
   end
 
   it "records when card has been touched out" do
@@ -78,7 +88,7 @@ def a_fare_can_be_deducted_from_balance
 end
 
 def and_card_has_been_touched_in
-  @oc.touch_in
+  @oc.touch_in(@station)
 end
 
 def and_card_has_been_touched_out
@@ -94,9 +104,17 @@ def card_will_not_show_as_in_use
 end
 
 def it_will_not_touch_in
-  expect{ @oc.touch_in }.to raise_error "Insufficient funds on card (required £#{Oystercard::MINIMUM_FARE/100})"
+  expect{ @oc.touch_in(@station) }.to raise_error "Insufficient funds on card (required £#{Oystercard::MINIMUM_FARE/100})"
 end
 
 def min_fare_will_be_deducted_when_touch_out
   expect { @oc.touch_out }.to change{ @oc.balance }.by(-Oystercard::MINIMUM_FARE)
+end
+
+def and_is_in_a_station_ready_to_go
+  @station = Station.new
+end
+
+def card_will_know_the_touch_in_station
+  expect(@oc.entry_station).to eq @station
 end
