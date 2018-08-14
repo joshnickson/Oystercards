@@ -19,31 +19,31 @@ describe "Oystercard feature tests" do
 
   # it "deducts fare from card balance" do
   #   given_a_user_has_a_new_card
-  #   and_the_card_has_been_topped_up
+  #   the_card_has_been_topped_up
   #   a_fare_can_be_deducted_from_balance
   # end
 
   it "records when card has been touched in" do
     given_a_user_has_a_new_card
-    and_is_in_a_station_ready_to_go
-    and_the_card_has_been_topped_up
-    and_card_has_been_touched_in
+    is_in_a_station_ready_to_go
+    the_card_has_been_topped_up
+    card_has_been_touched_in
     card_will_show_as_in_use
   end
 
   it "remembers the touch in station during the journey" do
     given_a_user_has_a_new_card
-    and_is_in_a_station_ready_to_go
-    and_the_card_has_been_topped_up
-    and_card_has_been_touched_in
+    is_in_a_station_ready_to_go
+    the_card_has_been_topped_up
+    card_has_been_touched_in
     card_will_know_the_touch_in_station
   end
 
   it "records when card has been touched out" do
     given_a_user_has_a_new_card
-    and_the_card_has_been_topped_up
-    and_card_has_been_touched_in
-    and_card_has_been_touched_out
+    the_card_has_been_topped_up
+    card_has_been_touched_in
+    card_has_been_touched_out
     card_will_not_show_as_in_use
   end
 
@@ -54,9 +54,22 @@ describe "Oystercard feature tests" do
 
   it "deducts minimum fare when card has been touched out" do
     given_a_user_has_a_new_card
-    and_the_card_has_been_topped_up
-    and_card_has_been_touched_in
+    the_card_has_been_topped_up
+    card_has_been_touched_in
     min_fare_will_be_deducted_when_touch_out
+  end
+
+  it "allows me to view my journey history" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    is_in_a_station_ready_to_go
+    card_has_been_touched_in
+    has_moved_to_a_new_station
+    card_has_been_touched_out
+    card_has_been_touched_in
+    card_has_been_touched_out
+    i_want_to_see_my_journey_history
+
   end
 
 end
@@ -79,7 +92,7 @@ def card_enforces_maximum_balance
   expect { @oc.top_up(1) }.to raise_error("Cannot top up over maximum limit (£90)")
 end
 
-def and_the_card_has_been_topped_up
+def the_card_has_been_topped_up
   @oc.top_up(1000)
 end
 
@@ -87,12 +100,12 @@ def a_fare_can_be_deducted_from_balance
   expect(@oc.deduct(300)).to eq 700
 end
 
-def and_card_has_been_touched_in
+def card_has_been_touched_in
   @oc.touch_in(@station)
 end
 
-def and_card_has_been_touched_out
-  @oc.touch_out
+def card_has_been_touched_out
+  @oc.touch_out(@station2)
 end
 
 def card_will_show_as_in_use
@@ -108,13 +121,21 @@ def it_will_not_touch_in
 end
 
 def min_fare_will_be_deducted_when_touch_out
-  expect { @oc.touch_out }.to change{ @oc.balance }.by(-Oystercard::MINIMUM_FARE)
+  expect { @oc.touch_out(@station) }.to change{ @oc.balance }.by(-Oystercard::MINIMUM_FARE)
 end
 
-def and_is_in_a_station_ready_to_go
+def is_in_a_station_ready_to_go
   @station = Station.new
 end
 
 def card_will_know_the_touch_in_station
   expect(@oc.entry_station).to eq @station
+end
+
+def has_moved_to_a_new_station
+  @station2 = Station.new
+end
+
+def i_want_to_see_my_journey_history
+  expect(@oc.journeys).to eq [@station, @station2, @station, @station2]
 end

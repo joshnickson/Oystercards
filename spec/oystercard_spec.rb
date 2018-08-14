@@ -57,14 +57,24 @@ describe Oystercard do
     end
 
     it "changes value of in_journey to false" do
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject).not_to be_in_journey
     end
 
     it "deducts minimum fare from balance" do
-      expect { subject.touch_out }.to change{ subject.balance }.by(-min_fare)
+      expect { subject.touch_out(station) }.to change{ subject.balance }.by(-min_fare)
     end
+  end
 
+  describe "#journeys" do
+    it "records touch in and touch out stations" do
+      subject.top_up(2 * min_fare)
+      subject.touch_in(station)
+      subject.touch_out(station)
+      subject.touch_in(station)
+      subject.touch_out(station)
+      expect(subject.journeys).to eq [station, station, station, station]
+    end
   end
 
 end
