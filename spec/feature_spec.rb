@@ -42,7 +42,9 @@ describe "Oystercard feature tests" do
   it "records when card has been touched out" do
     given_a_user_has_a_new_card
     the_card_has_been_topped_up
+    is_in_a_station_ready_to_go
     card_has_been_touched_in
+    has_moved_to_a_new_station
     card_has_been_touched_out
     card_will_not_show_as_in_use
   end
@@ -69,7 +71,11 @@ describe "Oystercard feature tests" do
     card_has_been_touched_in
     card_has_been_touched_out
     i_want_to_see_my_journey_history
+  end
 
+  it "will have an empty journey history to begin with" do
+    given_a_user_has_a_new_card
+    it_has_an_empty_journey_history
   end
 
 end
@@ -129,7 +135,7 @@ def is_in_a_station_ready_to_go
 end
 
 def card_will_know_the_touch_in_station
-  expect(@oc.entry_station).to eq @station
+  expect(@oc.journeys.last["in"]).to eq @station
 end
 
 def has_moved_to_a_new_station
@@ -137,5 +143,9 @@ def has_moved_to_a_new_station
 end
 
 def i_want_to_see_my_journey_history
-  expect(@oc.journeys).to eq [@station, @station2, @station, @station2]
+  expect(@oc.journeys).to eq [{"in" => @station, "out" => @station2}, {"in" => @station, "out" => @station2}]
+end
+
+def it_has_an_empty_journey_history
+  expect(@oc.journeys).to eq []
 end

@@ -44,7 +44,7 @@ describe Oystercard do
     it "will remember the touch in station" do
       subject.top_up(min_fare)
       subject.touch_in(station)
-      expect(subject.entry_station).to eq station
+      expect(subject.journeys.last["in"]).to eq station
     end
 
   end
@@ -67,13 +67,17 @@ describe Oystercard do
   end
 
   describe "#journeys" do
+    it "has an empty list of journeys on initiation" do
+      expect(subject.journeys).to eq []
+    end
+
     it "records touch in and touch out stations" do
       subject.top_up(2 * min_fare)
       subject.touch_in(station)
       subject.touch_out(station)
       subject.touch_in(station)
       subject.touch_out(station)
-      expect(subject.journeys).to eq [station, station, station, station]
+      expect(subject.journeys).to eq [{"in" => station, "out" => station}, {"in" => station, "out" => station}]
     end
   end
 
