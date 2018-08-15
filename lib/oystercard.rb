@@ -1,6 +1,7 @@
 class Oystercard
   DEFAULT_LIMIT = 9000
   MINIMUM_FARE = 100
+  PENALTY = 600
   attr_reader :balance, :journeys
 
   def initialize
@@ -15,6 +16,11 @@ class Oystercard
 
   def touch_in(station)
     fail "Insufficient funds on card (required £#{MINIMUM_FARE/100})" if insufficient_funds?
+
+    if in_journey?
+      deduct(PENALTY)
+    end
+
     journey = Hash.new
     journey["in"] = station
     @journeys << journey
@@ -26,6 +32,7 @@ class Oystercard
   end
 
   def in_journey?
+    return false if @journeys.empty?
     !@journeys.last["out"]
   end
 

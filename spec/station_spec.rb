@@ -1,6 +1,6 @@
 describe Station do
 
-  let(:subject) { Station.new("Whitechapel", 2)}
+  let(:subject) { described_class.new("Whitechapel", 2) }
 
   describe '#zone' do
     it 'returns the zone of the station' do

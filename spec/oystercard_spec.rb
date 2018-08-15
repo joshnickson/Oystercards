@@ -3,6 +3,7 @@ describe Oystercard do
 
   let(:max_bal)  { Oystercard::DEFAULT_LIMIT }
   let(:min_fare) { Oystercard::MINIMUM_FARE }
+  let(:penalty)  { Oystercard::PENALTY }
 
   let(:station) { double :station }
 
@@ -46,7 +47,11 @@ describe Oystercard do
       subject.touch_in(station)
       expect(subject.journeys.last["in"]).to eq station
     end
-
+    it "will charge a penalty fare if no touch out" do
+      subject.top_up(min_fare)
+      subject.touch_in(station)
+      expect{ subject.touch_in(station) }.to change { subject.balance }.by -600
+    end
   end
 
   describe "#touch_out" do

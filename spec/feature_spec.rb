@@ -88,6 +88,15 @@ describe "Oystercard feature tests" do
     we_can_find_the_name_of_the_station
   end
 
+  it "charges a penalty if I fail to touch in or out" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    is_in_a_station_ready_to_go
+    card_has_been_touched_in
+    is_in_a_station_ready_to_go
+    the_card_should_be_charged_a_penalty_on_touch_in
+  end
+
 end
 
 def given_a_user_has_a_new_card
@@ -170,4 +179,8 @@ end
 
 def we_can_find_the_name_of_the_station
   expect(@station.name).to eq 'Whitechapel'
+end
+
+def the_card_should_be_charged_a_penalty_on_touch_in
+  expect{ @oc.touch_in(@station) }.to change {@oc.balance}.by -Oystercard::PENALTY
 end
