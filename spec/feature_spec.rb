@@ -1,5 +1,6 @@
 require "oystercard"
 require "station"
+require "journeys"
 
 describe "Oystercard feature tests" do
   it "as a customer I want money on my card" do
@@ -104,6 +105,16 @@ describe "Oystercard feature tests" do
     the_card_should_be_charged_a_penalty_on_touch_out
   end
 
+  it "the journey knows when it is complete" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    is_in_a_station_ready_to_go
+    card_has_been_touched_in
+    has_moved_to_a_new_station
+    card_has_been_touched_out
+    the_journey_will_have_completed
+  end
+
 end
 
 def given_a_user_has_a_new_card
@@ -204,4 +215,8 @@ end
 
 def the_card_should_be_charged_a_penalty_on_touch_out
   expect{ @oc.touch_out(@station2) }.to change {@oc.balance}.by -(Oystercard::PENALTY)
+end
+
+def the_journey_will_have_completed
+  expect(@journey.complete?).to eq true
 end
