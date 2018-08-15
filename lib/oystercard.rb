@@ -14,26 +14,33 @@ class Oystercard
     @balance += amount
   end
 
-  def touch_in(station)
+  def touch_in(station, journey = Journey.new)
     fail "Insufficient funds on card (required £#{MINIMUM_FARE/100})" if insufficient_funds?
 
     if in_journey?
       deduct(PENALTY)
     end
 
-    journey = Hash.new
-    journey["in"] = station
+    journey.in = station
     @journeys << journey
   end
 
-  def touch_out(station)
-    @journeys.last["out"] = station
-    deduct(MINIMUM_FARE)
+  def touch_out(station, journey = @journeys.last)
+
+    if !in_journey?
+      journey = Journey.new
+      journey.out = station
+      @journeys << journey
+      deduct(PENALTY)
+    else
+      journey.out = station
+      deduct(MINIMUM_FARE)
+    end
   end
 
   def in_journey?
     return false if @journeys.empty?
-    !@journeys.last["out"]
+    !@journeys.last.out
   end
 
   private

@@ -68,8 +68,8 @@ describe "Oystercard feature tests" do
     card_has_been_touched_in
     has_moved_to_a_new_station
     card_has_been_touched_out
-    card_has_been_touched_in
-    card_has_been_touched_out
+    card_has_been_touched_in_2
+    card_has_been_touched_out_2
     i_want_to_see_my_journey_history
   end
 
@@ -88,13 +88,20 @@ describe "Oystercard feature tests" do
     we_can_find_the_name_of_the_station
   end
 
-  it "charges a penalty if I fail to touch in or out" do
+  it "charges a penalty if I touch in but failed out" do
     given_a_user_has_a_new_card
     the_card_has_been_topped_up
     is_in_a_station_ready_to_go
     card_has_been_touched_in
     is_in_a_station_ready_to_go
     the_card_should_be_charged_a_penalty_on_touch_in
+  end
+
+  it "charges a penalty if I touch out but failed to touch in" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    has_moved_to_a_new_station
+    the_card_should_be_charged_a_penalty_on_touch_out
   end
 
 end
@@ -126,11 +133,21 @@ def a_fare_can_be_deducted_from_balance
 end
 
 def card_has_been_touched_in
-  @oc.touch_in(@station)
+  @journey = Journey.new
+  @oc.touch_in(@station, @journey)
+end
+
+def card_has_been_touched_in_2
+  @journey2 = Journey.new
+  @oc.touch_in(@station, @journey2)
 end
 
 def card_has_been_touched_out
-  @oc.touch_out(@station2)
+  @oc.touch_out(@station2, @journey)
+end
+
+def card_has_been_touched_out_2
+  @oc.touch_out(@station2, @journey2)
 end
 
 def card_will_show_as_in_use
@@ -154,7 +171,7 @@ def is_in_a_station_ready_to_go
 end
 
 def card_will_know_the_touch_in_station
-  expect(@oc.journeys.last["in"]).to eq @station
+  expect(@oc.journeys.last.in).to eq @station
 end
 
 def has_moved_to_a_new_station
@@ -162,7 +179,7 @@ def has_moved_to_a_new_station
 end
 
 def i_want_to_see_my_journey_history
-  expect(@oc.journeys).to eq [{"in" => @station, "out" => @station2}, {"in" => @station, "out" => @station2}]
+  expect(@oc.journeys).to eq [@journey, @journey2]
 end
 
 def it_has_an_empty_journey_history
@@ -183,4 +200,8 @@ end
 
 def the_card_should_be_charged_a_penalty_on_touch_in
   expect{ @oc.touch_in(@station) }.to change {@oc.balance}.by -Oystercard::PENALTY
+end
+
+def the_card_should_be_charged_a_penalty_on_touch_out
+  expect{ @oc.touch_out(@station2) }.to change {@oc.balance}.by -(Oystercard::PENALTY)
 end

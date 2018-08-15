@@ -7,6 +7,8 @@ describe Oystercard do
 
   let(:station) { double :station }
 
+  let(:journey) { double :journey, in: 'Whitechapel', :in= => nil, :out= => nil }
+
   describe "#balance" do
     it { is_expected.to respond_to(:balance) }
 
@@ -45,12 +47,12 @@ describe Oystercard do
     it "will remember the touch in station" do
       subject.top_up(min_fare)
       subject.touch_in(station)
-      expect(subject.journeys.last["in"]).to eq station
+      expect(subject.journeys.last.in).to eq station
     end
     it "will charge a penalty fare if no touch out" do
       subject.top_up(min_fare)
       subject.touch_in(station)
-      expect{ subject.touch_in(station) }.to change { subject.balance }.by -600
+      expect{ subject.touch_in(station) }.to change { subject.balance }.by -penalty
     end
   end
 
@@ -69,6 +71,10 @@ describe Oystercard do
     it "deducts minimum fare from balance" do
       expect { subject.touch_out(station) }.to change{ subject.balance }.by(-min_fare)
     end
+    it "will charge a penalty fare if no touch in" do
+      subject.touch_out(station)
+      expect{ subject.touch_out(station) }.to change { subject.balance }.by -penalty
+    end
   end
 
   describe "#journeys" do
@@ -76,13 +82,14 @@ describe Oystercard do
       expect(subject.journeys).to eq []
     end
 
+    let(:journey) { double :journey, in: nil, out: nil, :in= => nil, :out= => nil }
     it "records touch in and touch out stations" do
       subject.top_up(2 * min_fare)
-      subject.touch_in(station)
-      subject.touch_out(station)
-      subject.touch_in(station)
-      subject.touch_out(station)
-      expect(subject.journeys).to eq [{"in" => station, "out" => station}, {"in" => station, "out" => station}]
+      subject.touch_in(station, journey)
+      subject.touch_out(station, journey)
+      subject.touch_in(station, journey)
+      subject.touch_out(station, journey)
+      expect(subject.journeys).to eq [journey, journey]
     end
   end
 
