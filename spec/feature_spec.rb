@@ -78,6 +78,16 @@ describe "Oystercard feature tests" do
     it_has_an_empty_journey_history
   end
 
+  it "allows me to check the zone of the station" do
+    given_that_we_have_a_station
+    we_can_find_the_zone_of_the_station
+  end
+
+  it "allows me to check the name of the station" do
+    given_that_we_have_a_station
+    we_can_find_the_name_of_the_station
+  end
+
 end
 
 def given_a_user_has_a_new_card
@@ -131,7 +141,7 @@ def min_fare_will_be_deducted_when_touch_out
 end
 
 def is_in_a_station_ready_to_go
-  @station = Station.new
+  @station = Station.new('Whitechapel', 2)
 end
 
 def card_will_know_the_touch_in_station
@@ -139,7 +149,7 @@ def card_will_know_the_touch_in_station
 end
 
 def has_moved_to_a_new_station
-  @station2 = Station.new
+  @station2 = Station.new('Hoxton', 1)
 end
 
 def i_want_to_see_my_journey_history
@@ -148,4 +158,16 @@ end
 
 def it_has_an_empty_journey_history
   expect(@oc.journeys).to eq []
+end
+
+def given_that_we_have_a_station
+  @station = Station.new('Whitechapel', 2)
+end
+
+def we_can_find_the_zone_of_the_station
+  expect(@station.zone).to eq 2
+end
+
+def we_can_find_the_name_of_the_station
+  expect(@station.name).to eq 'Whitechapel'
 end
