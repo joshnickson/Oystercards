@@ -1,9 +1,10 @@
 require "oystercard"
+require "journeys"
 describe Oystercard do
 
   let(:max_bal)  { Oystercard::DEFAULT_LIMIT }
-  let(:min_fare) { Oystercard::MINIMUM_FARE }
-  let(:penalty)  { Oystercard::PENALTY }
+  let(:min_fare) { Journey::MINIMUM_FARE }
+  let(:penalty)  { Journey::PENALTY }
 
   let(:station) { double :station }
 
@@ -82,7 +83,8 @@ describe Oystercard do
       expect(subject.journeys).to eq []
     end
 
-    let(:journey) { double :journey, in_s: nil, out: nil, :in_s= => nil, :out= => nil }
+    let(:journey) { double :journey, in_s: nil, out: nil, :in_s= => nil, :out= => nil,
+                    fare: 100}
     it "records touch in and touch out stations" do
       subject.top_up(2 * min_fare)
       subject.touch_in(station, journey)

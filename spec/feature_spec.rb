@@ -18,12 +18,6 @@ describe "Oystercard feature tests" do
     card_enforces_maximum_balance
   end
 
-  # it "deducts fare from card balance" do
-  #   given_a_user_has_a_new_card
-  #   the_card_has_been_topped_up
-  #   a_fare_can_be_deducted_from_balance
-  # end
-
   it "records when card has been touched in" do
     given_a_user_has_a_new_card
     is_in_a_station_ready_to_go
@@ -58,6 +52,7 @@ describe "Oystercard feature tests" do
   it "deducts minimum fare when card has been touched out" do
     given_a_user_has_a_new_card
     the_card_has_been_topped_up
+    is_in_a_station_ready_to_go
     card_has_been_touched_in
     min_fare_will_be_deducted_when_touch_out
   end
@@ -180,11 +175,11 @@ def card_will_not_show_as_in_use
 end
 
 def it_will_not_touch_in
-  expect{ @oc.touch_in(@station) }.to raise_error "Insufficient funds on card (required £#{Oystercard::MINIMUM_FARE/100})"
+  expect{ @oc.touch_in(@station) }.to raise_error "Insufficient funds on card (required £#{Journey::MINIMUM_FARE/100})"
 end
 
 def min_fare_will_be_deducted_when_touch_out
-  expect { @oc.touch_out(@station) }.to change{ @oc.balance }.by(-Oystercard::MINIMUM_FARE)
+  expect { @oc.touch_out(@station) }.to change{ @oc.balance }.by(-Journey::MINIMUM_FARE)
 end
 
 def is_in_a_station_ready_to_go
@@ -220,11 +215,11 @@ def we_can_find_the_name_of_the_station
 end
 
 def the_card_should_be_charged_a_penalty_on_touch_in
-  expect{ @oc.touch_in(@station) }.to change {@oc.balance}.by -Oystercard::PENALTY
+  expect{ @oc.touch_in(@station) }.to change {@oc.balance}.by -Journey::PENALTY
 end
 
 def the_card_should_be_charged_a_penalty_on_touch_out
-  expect{ @oc.touch_out(@station2) }.to change {@oc.balance}.by -(Oystercard::PENALTY)
+  expect{ @oc.touch_out(@station2) }.to change {@oc.balance}.by -(Journey::PENALTY)
 end
 
 def the_journey_will_have_completed
@@ -232,5 +227,5 @@ def the_journey_will_have_completed
 end
 
 def the_journey_will_calculate_the_fare
-  expect(@journey.fare).to eq 100
+  expect(@journey.fare).to eq Journey::MINIMUM_FARE
 end
