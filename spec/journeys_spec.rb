@@ -20,6 +20,10 @@ describe Journey do
     expect(subject.complete?).to eq false
   end
 
-  # it calculates a fare
+  it 'calculates a fare' do
+    subject.in = station
+    subject.out = station
+    expect(subject.fare).to eq 100
+  end
 
 end

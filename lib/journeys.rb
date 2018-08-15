@@ -5,4 +5,8 @@ class Journey
     !!out
   end
 
+  def fare
+    Oystercard::MINIMUM_FARE
+  end
+
 end

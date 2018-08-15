@@ -115,6 +115,16 @@ describe "Oystercard feature tests" do
     the_journey_will_have_completed
   end
 
+  it "the journey calculates a fare" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    is_in_a_station_ready_to_go
+    card_has_been_touched_in
+    has_moved_to_a_new_station
+    card_has_been_touched_out
+    the_journey_will_calculate_the_fare
+  end
+
 end
 
 def given_a_user_has_a_new_card
@@ -219,4 +229,8 @@ end
 
 def the_journey_will_have_completed
   expect(@journey.complete?).to eq true
+end
+
+def the_journey_will_calculate_the_fare
+  expect(@journey.fare).to eq 100
 end
