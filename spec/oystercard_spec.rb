@@ -7,7 +7,7 @@ describe Oystercard do
 
   let(:station) { double :station }
 
-  let(:journey) { double :journey, in: 'Whitechapel', :in= => nil, :out= => nil }
+  let(:journey) { double :journey, in_s: 'Whitechapel', :in_s= => nil, :out= => nil }
 
   describe "#balance" do
     it { is_expected.to respond_to(:balance) }
@@ -47,7 +47,7 @@ describe Oystercard do
     it "will remember the touch in station" do
       subject.top_up(min_fare)
       subject.touch_in(station)
-      expect(subject.journeys.last.in).to eq station
+      expect(subject.journeys.last.in_s).to eq station
     end
     it "will charge a penalty fare if no touch out" do
       subject.top_up(min_fare)
@@ -82,7 +82,7 @@ describe Oystercard do
       expect(subject.journeys).to eq []
     end
 
-    let(:journey) { double :journey, in: nil, out: nil, :in= => nil, :out= => nil }
+    let(:journey) { double :journey, in_s: nil, out: nil, :in_s= => nil, :out= => nil }
     it "records touch in and touch out stations" do
       subject.top_up(2 * min_fare)
       subject.touch_in(station, journey)

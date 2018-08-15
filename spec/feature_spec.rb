@@ -192,7 +192,7 @@ def is_in_a_station_ready_to_go
 end
 
 def card_will_know_the_touch_in_station
-  expect(@oc.journeys.last.in).to eq @station
+  expect(@oc.journeys.last.in_s).to eq @station
 end
 
 def has_moved_to_a_new_station

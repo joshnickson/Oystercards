@@ -21,7 +21,7 @@ class Oystercard
       deduct(PENALTY)
     end
 
-    journey.in = station
+    journey.in_s = station
     @journeys << journey
   end
 

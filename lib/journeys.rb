@@ -1,12 +1,16 @@
 class Journey
-  attr_accessor :in, :out
+  attr_accessor :in_s, :out
 
   def complete?
-    !!out
+    !!out && !!in_s
   end
 
   def fare
-    Oystercard::MINIMUM_FARE
+    if complete?
+      Oystercard::MINIMUM_FARE
+    else
+      Oystercard::PENALTY
+    end
   end
 
 end
