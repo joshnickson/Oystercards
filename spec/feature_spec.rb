@@ -69,6 +69,38 @@ describe "Oystercard feature tests" do
     i_want_to_see_my_journey_history
   end
 
+  it "allows me to view my journey history even if a bad touch in" do
+    oc = Oystercard.new
+    oc.top_up(1000)
+    station1 = Station.new("Whitechapel", 2)
+    station2 = Station.new('Hoxton', 1)
+    oc.touch_out(station2)
+    oc.touch_in(station1)
+    oc.touch_out(station2)
+    expect(oc.journeys.length).to eq 2
+    expect(oc.journeys[0].in_s).to eq nil
+    expect(oc.journeys[0].out).to eq station2
+    expect(oc.journeys[1].in_s).to eq station1
+    expect(oc.journeys[1].out).to eq station2
+    expect(oc.balance).to eq (1000-100-600)
+  end
+
+  it "allows me to view my journey history even if a bad touch out" do
+    oc = Oystercard.new
+    oc.top_up(1000)
+    station1 = Station.new("Whitechapel", 2)
+    station2 = Station.new('Hoxton', 1)
+    oc.touch_in(station1)
+    oc.touch_in(station1)
+    oc.touch_out(station2)
+    expect(oc.journeys.length).to eq 2
+    expect(oc.journeys[0].in_s).to eq station1
+    expect(oc.journeys[0].out).to eq nil
+    expect(oc.journeys[1].in_s).to eq station1
+    expect(oc.journeys[1].out).to eq station2
+    expect(oc.balance).to eq (1000-100-600)
+  end
+
   it "will have an empty journey history to begin with" do
     given_a_user_has_a_new_card
     it_has_an_empty_journey_history
@@ -159,6 +191,11 @@ def card_has_been_touched_in_2
 end
 
 def card_has_been_touched_out
+  @oc.touch_out(@station2, @journey)
+end
+
+def card_has_been_touched_out_without_in
+  @journey = Journey.new
   @oc.touch_out(@station2, @journey)
 end
 
