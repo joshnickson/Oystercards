@@ -1,11 +1,11 @@
 class Oystercard
   DEFAULT_LIMIT = 9000
 
-  attr_reader :balance, :journeys
+  attr_reader :balance, :journey_log
 
   def initialize(journey_log = JourneyLog.new)
     @balance = 0
-    @journeys = journey_log
+    @journey_log = journey_log
   end
 
   def top_up(amount)
@@ -13,26 +13,26 @@ class Oystercard
     @balance += amount
   end
 
-  def touch_in(station, journey = Journey.new)
+  def touch_in(station)
     fail "Insufficient funds on card (required £#{Journey::MINIMUM_FARE/100})" if insufficient_funds?
-    deduct(@journeys.last.fare) if in_journey?
-    journey.in_s = station
-    @journeys << journey
+    #deduct(@journeys.last.fare) if in_journey?
+    @journey_log.start(station)
+    #@journeys << journey
   end
 
-  def touch_out(station, journey = @journeys.last)
-    if !in_journey?
-      journey = Journey.new
-      @journeys << journey
-    end
-    journey.out = station
-    deduct(journey.fare)
+  def touch_out(station)
+    # if !in_journey?
+    #   journey = Journey.new
+    #   @journeys << journey
+    # end
+    @journey_log.finish(station)
+    #deduct(journey.fare)
   end
 
-  def in_journey?
-    return false if @journeys.empty?
-    !@journeys.last.out
-  end
+  # def in_journey?
+  #   return false if @journeys.empty?
+  #   !@journeys.last.out
+  # end
 
   private
 

@@ -4,7 +4,8 @@ describe JourneyLog do
 
   let(:in_station) { double :in_station }
   let(:out_station) { double :out_station }
-  let(:journey) { double :journey, :in_s= => in_station, :out= => out_station }
+  let(:journey) { double :journey, :in_s= => in_station, :out= => out_station, out: out_station }
+  let(:journey2) { double :journey, :in_s= => in_station, :out= => out_station, out: out_station }
   let(:journey_klass) { double :journey_klass, new: journey }
   subject { described_class.new(journey_klass) }
 
@@ -30,10 +31,17 @@ describe JourneyLog do
 
     it 'completes a journey' do
       subject.start(in_station)
+      allow(journey).to receive(:complete?).and_return(false)
       subject.finish(out_station)
       expect(subject.journeys.last).to eq journey
     end
 
+    it 'creates a new journey if there was no touch in' do
+      allow(journey).to receive(:complete?).and_return(false)
+      subject.finish(out_station)
+      p subject.journeys
+      expect(subject.journeys.last).to eq journey
+    end
 
   end
 

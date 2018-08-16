@@ -1,54 +1,55 @@
 require "oystercard"
 require "station"
 require "journey"
+require 'journey_log'
 
 describe "Oystercard feature tests" do
-  # it "as a customer I want money on my card" do
-  #   given_a_user_has_a_new_card
-  #   card_should_show_us_the_balance
-  # end
-  #
-  # it "allows a user to top up a card" do
-  #   given_a_user_has_a_new_card
-  #   card_can_be_topped_up_and_return_new_balance
-  # end
-  #
-  # it "enforces a maximum limit on my oystercard" do
-  #   given_a_user_has_a_new_card
-  #   card_enforces_maximum_balance
-  # end
-  #
-  # it "records when card has been touched in" do
-  #   given_a_user_has_a_new_card
-  #   is_in_a_station_ready_to_go
-  #   the_card_has_been_topped_up
-  #   card_has_been_touched_in
-  #   card_will_show_as_in_use
-  # end
-  #
-  # it "remembers the touch in station during the journey" do
-  #   given_a_user_has_a_new_card
-  #   is_in_a_station_ready_to_go
-  #   the_card_has_been_topped_up
-  #   card_has_been_touched_in
-  #   card_will_know_the_touch_in_station
-  # end
-  #
-  # it "records when card has been touched out" do
-  #   given_a_user_has_a_new_card
-  #   the_card_has_been_topped_up
-  #   is_in_a_station_ready_to_go
-  #   card_has_been_touched_in
-  #   has_moved_to_a_new_station
-  #   card_has_been_touched_out
-  #   card_will_not_show_as_in_use
-  # end
-  #
-  # it "refuses touch in if insufficient funds" do
-  #   given_a_user_has_a_new_card
-  #   it_will_not_touch_in
-  # end
-  #
+  it "as a customer I want money on my card" do
+    given_a_user_has_a_new_card
+    card_should_show_us_the_balance
+  end
+
+  it "allows a user to top up a card" do
+    given_a_user_has_a_new_card
+    card_can_be_topped_up_and_return_new_balance
+  end
+
+  it "enforces a maximum limit on my oystercard" do
+    given_a_user_has_a_new_card
+    card_enforces_maximum_balance
+  end
+
+  it "records when card has been touched in" do
+    given_a_user_has_a_new_card
+    is_in_a_station_ready_to_go
+    the_card_has_been_topped_up
+    card_has_been_touched_in
+    card_will_show_as_in_use
+  end
+
+  it "remembers the touch in station during the journey" do
+    given_a_user_has_a_new_card
+    is_in_a_station_ready_to_go
+    the_card_has_been_topped_up
+    card_has_been_touched_in
+    card_will_know_the_touch_in_station
+  end
+
+  it "records when card has been touched out" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    is_in_a_station_ready_to_go
+    card_has_been_touched_in
+    has_moved_to_a_new_station
+    card_has_been_touched_out
+    card_will_not_show_as_in_use
+  end
+
+  it "refuses touch in if insufficient funds" do
+    given_a_user_has_a_new_card
+    it_will_not_touch_in
+  end
+
   # it "deducts minimum fare when card has been touched out" do
   #   given_a_user_has_a_new_card
   #   the_card_has_been_topped_up
@@ -68,7 +69,7 @@ describe "Oystercard feature tests" do
   #   card_has_been_touched_out_2
   #   i_want_to_see_my_journey_history
   # end
-  #
+
   # it "allows me to view my journey history even if a bad touch in" do
   #   oc = Oystercard.new
   #   oc.top_up(1000)
@@ -174,8 +175,7 @@ describe "Oystercard feature tests" do
     oyster.touch_in(peckham)
     oyster.touch_out(whitechapel)
 
-    p oyster.journeys
-
+    p oyster.journey_log
   end
 
 end
@@ -207,34 +207,31 @@ def a_fare_can_be_deducted_from_balance
 end
 
 def card_has_been_touched_in
-  @journey = Journey.new
-  @oc.touch_in(@station, @journey)
+  @oc.touch_in(@station)
 end
 
 def card_has_been_touched_in_2
-  @journey2 = Journey.new
-  @oc.touch_in(@station, @journey2)
+  @oc.touch_in(@station)
 end
 
 def card_has_been_touched_out
-  @oc.touch_out(@station2, @journey)
+  @oc.touch_out(@station2)
 end
 
 def card_has_been_touched_out_without_in
-  @journey = Journey.new
-  @oc.touch_out(@station2, @journey)
+  @oc.touch_out(@station2)
 end
 
 def card_has_been_touched_out_2
-  @oc.touch_out(@station2, @journey2)
+  @oc.touch_out(@station2)
 end
 
 def card_will_show_as_in_use
-  expect(@oc.in_journey?).to be true
+  expect(@oc.journey_log.in_journey?).to be true
 end
 
 def card_will_not_show_as_in_use
-  expect(@oc.in_journey?).to be false
+  expect(@oc.journey_log.in_journey?).to be false
 end
 
 def it_will_not_touch_in
@@ -250,7 +247,7 @@ def is_in_a_station_ready_to_go
 end
 
 def card_will_know_the_touch_in_station
-  expect(@oc.journeys.last.in_s).to eq @station
+  expect(@oc.journey_log.journeys.last.in_s).to eq @station
 end
 
 def has_moved_to_a_new_station
@@ -258,7 +255,7 @@ def has_moved_to_a_new_station
 end
 
 def i_want_to_see_my_journey_history
-  expect(@oc.journeys).to eq [@journey, @journey2]
+  expect(@oc.journey_log.journeys.last).to eq [@journey, @journey2]
 end
 
 def it_has_an_empty_journey_history
