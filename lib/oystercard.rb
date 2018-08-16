@@ -3,9 +3,9 @@ class Oystercard
 
   attr_reader :balance, :journeys
 
-  def initialize
+  def initialize(journey_log = JourneyLog.new)
     @balance = 0
-    @journeys = []
+    @journeys = journey_log
   end
 
   def top_up(amount)

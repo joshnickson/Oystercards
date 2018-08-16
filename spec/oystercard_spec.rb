@@ -1,5 +1,5 @@
 require "oystercard"
-require "journeys"
+require "journey"
 describe Oystercard do
 
   let(:max_bal)  { Oystercard::DEFAULT_LIMIT }
@@ -10,6 +10,8 @@ describe Oystercard do
 
   let(:journey) { double :journey, in_s: 'Whitechapel', :in_s= => nil, :out= => nil }
 
+  let(:journey_log) { double :journey_log }
+
   describe "#balance" do
     it { is_expected.to respond_to(:balance) }
 
@@ -19,7 +21,7 @@ describe Oystercard do
 
   end
 
-  describe "#add_money" do
+  describe "#top_up" do
     it "allows users to add money to their oystercard" do
       expect(subject.top_up(500)).to eq 500
     end
@@ -29,12 +31,6 @@ describe Oystercard do
       expect { subject.top_up(1) }.to raise_error("Cannot top up over maximum limit (£90)")
     end
   end
-  # describe "#deduct" do
-  #   it "deducts the fare amount from the card balance" do
-  #     subject.top_up(1000)
-  #     expect(subject.deduct(300)).to eq 700
-  #   end
-  # end
 
   describe "#touch_in" do
     it "changes value of in_journey to true" do

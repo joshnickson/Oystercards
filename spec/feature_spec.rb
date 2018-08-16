@@ -1,155 +1,181 @@
 require "oystercard"
 require "station"
-require "journeys"
+require "journey"
 
 describe "Oystercard feature tests" do
-  it "as a customer I want money on my card" do
-    given_a_user_has_a_new_card
-    card_should_show_us_the_balance
-  end
+  # it "as a customer I want money on my card" do
+  #   given_a_user_has_a_new_card
+  #   card_should_show_us_the_balance
+  # end
+  #
+  # it "allows a user to top up a card" do
+  #   given_a_user_has_a_new_card
+  #   card_can_be_topped_up_and_return_new_balance
+  # end
+  #
+  # it "enforces a maximum limit on my oystercard" do
+  #   given_a_user_has_a_new_card
+  #   card_enforces_maximum_balance
+  # end
+  #
+  # it "records when card has been touched in" do
+  #   given_a_user_has_a_new_card
+  #   is_in_a_station_ready_to_go
+  #   the_card_has_been_topped_up
+  #   card_has_been_touched_in
+  #   card_will_show_as_in_use
+  # end
+  #
+  # it "remembers the touch in station during the journey" do
+  #   given_a_user_has_a_new_card
+  #   is_in_a_station_ready_to_go
+  #   the_card_has_been_topped_up
+  #   card_has_been_touched_in
+  #   card_will_know_the_touch_in_station
+  # end
+  #
+  # it "records when card has been touched out" do
+  #   given_a_user_has_a_new_card
+  #   the_card_has_been_topped_up
+  #   is_in_a_station_ready_to_go
+  #   card_has_been_touched_in
+  #   has_moved_to_a_new_station
+  #   card_has_been_touched_out
+  #   card_will_not_show_as_in_use
+  # end
+  #
+  # it "refuses touch in if insufficient funds" do
+  #   given_a_user_has_a_new_card
+  #   it_will_not_touch_in
+  # end
+  #
+  # it "deducts minimum fare when card has been touched out" do
+  #   given_a_user_has_a_new_card
+  #   the_card_has_been_topped_up
+  #   is_in_a_station_ready_to_go
+  #   card_has_been_touched_in
+  #   min_fare_will_be_deducted_when_touch_out
+  # end
+  #
+  # it "allows me to view my journey history" do
+  #   given_a_user_has_a_new_card
+  #   the_card_has_been_topped_up
+  #   is_in_a_station_ready_to_go
+  #   card_has_been_touched_in
+  #   has_moved_to_a_new_station
+  #   card_has_been_touched_out
+  #   card_has_been_touched_in_2
+  #   card_has_been_touched_out_2
+  #   i_want_to_see_my_journey_history
+  # end
+  #
+  # it "allows me to view my journey history even if a bad touch in" do
+  #   oc = Oystercard.new
+  #   oc.top_up(1000)
+  #   station1 = Station.new("Whitechapel", 2)
+  #   station2 = Station.new('Hoxton', 1)
+  #   oc.touch_out(station2)
+  #   oc.touch_in(station1)
+  #   oc.touch_out(station2)
+  #   expect(oc.journeys.length).to eq 2
+  #   expect(oc.journeys[0].in_s).to eq nil
+  #   expect(oc.journeys[0].out).to eq station2
+  #   expect(oc.journeys[1].in_s).to eq station1
+  #   expect(oc.journeys[1].out).to eq station2
+  #   expect(oc.balance).to eq (1000-100-600)
+  # end
+  #
+  # it "allows me to view my journey history even if a bad touch out" do
+  #   oc = Oystercard.new
+  #   oc.top_up(1000)
+  #   station1 = Station.new("Whitechapel", 2)
+  #   station2 = Station.new('Hoxton', 1)
+  #   oc.touch_in(station1)
+  #   oc.touch_in(station1)
+  #   oc.touch_out(station2)
+  #   expect(oc.journeys.length).to eq 2
+  #   expect(oc.journeys[0].in_s).to eq station1
+  #   expect(oc.journeys[0].out).to eq nil
+  #   expect(oc.journeys[1].in_s).to eq station1
+  #   expect(oc.journeys[1].out).to eq station2
+  #   expect(oc.balance).to eq (1000-100-600)
+  # end
+  #
+  # it "will have an empty journey history to begin with" do
+  #   given_a_user_has_a_new_card
+  #   it_has_an_empty_journey_history
+  # end
+  #
+  # it "allows me to check the zone of the station" do
+  #   given_that_we_have_a_station
+  #   we_can_find_the_zone_of_the_station
+  # end
+  #
+  # it "allows me to check the name of the station" do
+  #   given_that_we_have_a_station
+  #   we_can_find_the_name_of_the_station
+  # end
+  #
+  # it "charges a penalty if I touch in but failed out" do
+  #   given_a_user_has_a_new_card
+  #   the_card_has_been_topped_up
+  #   is_in_a_station_ready_to_go
+  #   card_has_been_touched_in
+  #   is_in_a_station_ready_to_go
+  #   the_card_should_be_charged_a_penalty_on_touch_in
+  # end
+  #
+  # it "charges a penalty if I touch out but failed to touch in" do
+  #   given_a_user_has_a_new_card
+  #   the_card_has_been_topped_up
+  #   has_moved_to_a_new_station
+  #   the_card_should_be_charged_a_penalty_on_touch_out
+  # end
+  #
+  # it "the journey knows when it is complete" do
+  #   given_a_user_has_a_new_card
+  #   the_card_has_been_topped_up
+  #   is_in_a_station_ready_to_go
+  #   card_has_been_touched_in
+  #   has_moved_to_a_new_station
+  #   card_has_been_touched_out
+  #   the_journey_will_have_completed
+  # end
+  #
+  # it "the journey calculates a fare" do
+  #   given_a_user_has_a_new_card
+  #   the_card_has_been_topped_up
+  #   is_in_a_station_ready_to_go
+  #   card_has_been_touched_in
+  #   has_moved_to_a_new_station
+  #   card_has_been_touched_out
+  #   the_journey_will_calculate_the_fare
+  # end
+  #
+  # it "the journey calculates a fare" do
+  #   given_a_user_has_a_new_card
+  #   the_card_has_been_topped_up
+  #   is_in_a_station_ready_to_go
+  #   card_has_been_touched_in
+  #   has_moved_to_a_new_station
+  #   card_has_been_touched_out
+  #   the_journey_will_calculate_the_fare
+  # end
 
-  it "allows a user to top up a card" do
-    given_a_user_has_a_new_card
-    card_can_be_topped_up_and_return_new_balance
-  end
+  it "shows the journey history of an oystercard" do
+    oyster = Oystercard.new
+    oyster.top_up(5000)
+    whitechapel = Station.new('Whitechapel', 2)
+    peckham = Station.new('Peckham', 2)
 
-  it "enforces a maximum limit on my oystercard" do
-    given_a_user_has_a_new_card
-    card_enforces_maximum_balance
-  end
+    oyster.touch_in(whitechapel)
+    oyster.touch_out(peckham)
 
-  it "records when card has been touched in" do
-    given_a_user_has_a_new_card
-    is_in_a_station_ready_to_go
-    the_card_has_been_topped_up
-    card_has_been_touched_in
-    card_will_show_as_in_use
-  end
+    oyster.touch_in(peckham)
+    oyster.touch_out(whitechapel)
 
-  it "remembers the touch in station during the journey" do
-    given_a_user_has_a_new_card
-    is_in_a_station_ready_to_go
-    the_card_has_been_topped_up
-    card_has_been_touched_in
-    card_will_know_the_touch_in_station
-  end
+    p oyster.journeys
 
-  it "records when card has been touched out" do
-    given_a_user_has_a_new_card
-    the_card_has_been_topped_up
-    is_in_a_station_ready_to_go
-    card_has_been_touched_in
-    has_moved_to_a_new_station
-    card_has_been_touched_out
-    card_will_not_show_as_in_use
-  end
-
-  it "refuses touch in if insufficient funds" do
-    given_a_user_has_a_new_card
-    it_will_not_touch_in
-  end
-
-  it "deducts minimum fare when card has been touched out" do
-    given_a_user_has_a_new_card
-    the_card_has_been_topped_up
-    is_in_a_station_ready_to_go
-    card_has_been_touched_in
-    min_fare_will_be_deducted_when_touch_out
-  end
-
-  it "allows me to view my journey history" do
-    given_a_user_has_a_new_card
-    the_card_has_been_topped_up
-    is_in_a_station_ready_to_go
-    card_has_been_touched_in
-    has_moved_to_a_new_station
-    card_has_been_touched_out
-    card_has_been_touched_in_2
-    card_has_been_touched_out_2
-    i_want_to_see_my_journey_history
-  end
-
-  it "allows me to view my journey history even if a bad touch in" do
-    oc = Oystercard.new
-    oc.top_up(1000)
-    station1 = Station.new("Whitechapel", 2)
-    station2 = Station.new('Hoxton', 1)
-    oc.touch_out(station2)
-    oc.touch_in(station1)
-    oc.touch_out(station2)
-    expect(oc.journeys.length).to eq 2
-    expect(oc.journeys[0].in_s).to eq nil
-    expect(oc.journeys[0].out).to eq station2
-    expect(oc.journeys[1].in_s).to eq station1
-    expect(oc.journeys[1].out).to eq station2
-    expect(oc.balance).to eq (1000-100-600)
-  end
-
-  it "allows me to view my journey history even if a bad touch out" do
-    oc = Oystercard.new
-    oc.top_up(1000)
-    station1 = Station.new("Whitechapel", 2)
-    station2 = Station.new('Hoxton', 1)
-    oc.touch_in(station1)
-    oc.touch_in(station1)
-    oc.touch_out(station2)
-    expect(oc.journeys.length).to eq 2
-    expect(oc.journeys[0].in_s).to eq station1
-    expect(oc.journeys[0].out).to eq nil
-    expect(oc.journeys[1].in_s).to eq station1
-    expect(oc.journeys[1].out).to eq station2
-    expect(oc.balance).to eq (1000-100-600)
-  end
-
-  it "will have an empty journey history to begin with" do
-    given_a_user_has_a_new_card
-    it_has_an_empty_journey_history
-  end
-
-  it "allows me to check the zone of the station" do
-    given_that_we_have_a_station
-    we_can_find_the_zone_of_the_station
-  end
-
-  it "allows me to check the name of the station" do
-    given_that_we_have_a_station
-    we_can_find_the_name_of_the_station
-  end
-
-  it "charges a penalty if I touch in but failed out" do
-    given_a_user_has_a_new_card
-    the_card_has_been_topped_up
-    is_in_a_station_ready_to_go
-    card_has_been_touched_in
-    is_in_a_station_ready_to_go
-    the_card_should_be_charged_a_penalty_on_touch_in
-  end
-
-  it "charges a penalty if I touch out but failed to touch in" do
-    given_a_user_has_a_new_card
-    the_card_has_been_topped_up
-    has_moved_to_a_new_station
-    the_card_should_be_charged_a_penalty_on_touch_out
-  end
-
-  it "the journey knows when it is complete" do
-    given_a_user_has_a_new_card
-    the_card_has_been_topped_up
-    is_in_a_station_ready_to_go
-    card_has_been_touched_in
-    has_moved_to_a_new_station
-    card_has_been_touched_out
-    the_journey_will_have_completed
-  end
-
-  it "the journey calculates a fare" do
-    given_a_user_has_a_new_card
-    the_card_has_been_topped_up
-    is_in_a_station_ready_to_go
-    card_has_been_touched_in
-    has_moved_to_a_new_station
-    card_has_been_touched_out
-    the_journey_will_calculate_the_fare
   end
 
 end

@@ -1,4 +1,4 @@
-require "journeys"
+require "journey"
 
 describe Journey do
 
