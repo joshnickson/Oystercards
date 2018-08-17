@@ -15,7 +15,7 @@ class Oystercard
 
   def touch_in(station)
     fail "Insufficient funds on card (required £#{Journey::MINIMUM_FARE/100})" if insufficient_funds?
-    #deduct(@journeys.last.fare) if in_journey?
+    deduct(@journey_log.journeys.last.fare) if @journey_log.in_journey?
     @journey_log.start(station)
     #@journeys << journey
   end
@@ -26,7 +26,7 @@ class Oystercard
     #   @journeys << journey
     # end
     @journey_log.finish(station)
-    #deduct(journey.fare)
+    deduct(@journey_log.journeys.last.fare)
   end
 
   # def in_journey?

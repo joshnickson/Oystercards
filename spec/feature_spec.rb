@@ -50,118 +50,104 @@ describe "Oystercard feature tests" do
     it_will_not_touch_in
   end
 
-  # it "deducts minimum fare when card has been touched out" do
-  #   given_a_user_has_a_new_card
-  #   the_card_has_been_topped_up
-  #   is_in_a_station_ready_to_go
-  #   card_has_been_touched_in
-  #   min_fare_will_be_deducted_when_touch_out
-  # end
-  #
-  # it "allows me to view my journey history" do
-  #   given_a_user_has_a_new_card
-  #   the_card_has_been_topped_up
-  #   is_in_a_station_ready_to_go
-  #   card_has_been_touched_in
-  #   has_moved_to_a_new_station
-  #   card_has_been_touched_out
-  #   card_has_been_touched_in_2
-  #   card_has_been_touched_out_2
-  #   i_want_to_see_my_journey_history
-  # end
+  it "deducts minimum fare when card has been touched out" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    is_in_a_station_ready_to_go
+    card_has_been_touched_in
+    min_fare_will_be_deducted_when_touch_out
+  end
 
-  # it "allows me to view my journey history even if a bad touch in" do
-  #   oc = Oystercard.new
-  #   oc.top_up(1000)
-  #   station1 = Station.new("Whitechapel", 2)
-  #   station2 = Station.new('Hoxton', 1)
-  #   oc.touch_out(station2)
-  #   oc.touch_in(station1)
-  #   oc.touch_out(station2)
-  #   expect(oc.journeys.length).to eq 2
-  #   expect(oc.journeys[0].in_s).to eq nil
-  #   expect(oc.journeys[0].out).to eq station2
-  #   expect(oc.journeys[1].in_s).to eq station1
-  #   expect(oc.journeys[1].out).to eq station2
-  #   expect(oc.balance).to eq (1000-100-600)
-  # end
-  #
-  # it "allows me to view my journey history even if a bad touch out" do
-  #   oc = Oystercard.new
-  #   oc.top_up(1000)
-  #   station1 = Station.new("Whitechapel", 2)
-  #   station2 = Station.new('Hoxton', 1)
-  #   oc.touch_in(station1)
-  #   oc.touch_in(station1)
-  #   oc.touch_out(station2)
-  #   expect(oc.journeys.length).to eq 2
-  #   expect(oc.journeys[0].in_s).to eq station1
-  #   expect(oc.journeys[0].out).to eq nil
-  #   expect(oc.journeys[1].in_s).to eq station1
-  #   expect(oc.journeys[1].out).to eq station2
-  #   expect(oc.balance).to eq (1000-100-600)
-  # end
-  #
-  # it "will have an empty journey history to begin with" do
-  #   given_a_user_has_a_new_card
-  #   it_has_an_empty_journey_history
-  # end
-  #
-  # it "allows me to check the zone of the station" do
-  #   given_that_we_have_a_station
-  #   we_can_find_the_zone_of_the_station
-  # end
-  #
-  # it "allows me to check the name of the station" do
-  #   given_that_we_have_a_station
-  #   we_can_find_the_name_of_the_station
-  # end
-  #
-  # it "charges a penalty if I touch in but failed out" do
-  #   given_a_user_has_a_new_card
-  #   the_card_has_been_topped_up
-  #   is_in_a_station_ready_to_go
-  #   card_has_been_touched_in
-  #   is_in_a_station_ready_to_go
-  #   the_card_should_be_charged_a_penalty_on_touch_in
-  # end
-  #
-  # it "charges a penalty if I touch out but failed to touch in" do
-  #   given_a_user_has_a_new_card
-  #   the_card_has_been_topped_up
-  #   has_moved_to_a_new_station
-  #   the_card_should_be_charged_a_penalty_on_touch_out
-  # end
-  #
-  # it "the journey knows when it is complete" do
-  #   given_a_user_has_a_new_card
-  #   the_card_has_been_topped_up
-  #   is_in_a_station_ready_to_go
-  #   card_has_been_touched_in
-  #   has_moved_to_a_new_station
-  #   card_has_been_touched_out
-  #   the_journey_will_have_completed
-  # end
-  #
-  # it "the journey calculates a fare" do
-  #   given_a_user_has_a_new_card
-  #   the_card_has_been_topped_up
-  #   is_in_a_station_ready_to_go
-  #   card_has_been_touched_in
-  #   has_moved_to_a_new_station
-  #   card_has_been_touched_out
-  #   the_journey_will_calculate_the_fare
-  # end
-  #
-  # it "the journey calculates a fare" do
-  #   given_a_user_has_a_new_card
-  #   the_card_has_been_topped_up
-  #   is_in_a_station_ready_to_go
-  #   card_has_been_touched_in
-  #   has_moved_to_a_new_station
-  #   card_has_been_touched_out
-  #   the_journey_will_calculate_the_fare
-  # end
+  it "allows me to view my journey history even if you forgot to touch in" do
+    oc = Oystercard.new
+    oc.top_up(1000)
+    station1 = Station.new("Whitechapel", 2)
+    station2 = Station.new('Hoxton', 1)
+    oc.touch_out(station2)
+    oc.touch_in(station1)
+    oc.touch_out(station2)
+    expect(oc.journey_log.journeys.length).to eq 2
+    expect(oc.journey_log.journeys[0].in_s).to eq nil
+    expect(oc.journey_log.journeys[0].out).to eq station2
+    expect(oc.journey_log.journeys[1].in_s).to eq station1
+    expect(oc.journey_log.journeys[1].out).to eq station2
+  end
+
+  it "allows me to view my journey history even if a bad touch out" do
+    oc = Oystercard.new
+    oc.top_up(1000)
+    station1 = Station.new("Whitechapel", 2)
+    station2 = Station.new('Hoxton', 1)
+    oc.touch_in(station1)
+    oc.touch_in(station1)
+    oc.touch_out(station2)
+    expect(oc.journey_log.journeys.length).to eq 2
+    expect(oc.journey_log.journeys[0].in_s).to eq station1
+    expect(oc.journey_log.journeys[0].out).to eq nil
+    expect(oc.journey_log.journeys[1].in_s).to eq station1
+    expect(oc.journey_log.journeys[1].out).to eq station2
+  end
+
+  it "will have an empty journey history to begin with" do
+    given_a_user_has_a_new_card
+    it_has_an_empty_journey_history
+  end
+
+  it "allows me to check the zone of the station" do
+    given_that_we_have_a_station
+    we_can_find_the_zone_of_the_station
+  end
+
+  it "allows me to check the name of the station" do
+    given_that_we_have_a_station
+    we_can_find_the_name_of_the_station
+  end
+
+  it "charges a penalty if I touch in but failed out" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    is_in_a_station_ready_to_go
+    card_has_been_touched_in
+    is_in_a_station_ready_to_go
+    the_card_should_be_charged_a_penalty_on_touch_in
+  end
+
+  it "charges a penalty if I touch out but failed to touch in" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    has_moved_to_a_new_station
+    the_card_should_be_charged_a_penalty_on_touch_out
+  end
+
+  it "the journey knows when it is complete" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    is_in_a_station_ready_to_go
+    card_has_been_touched_in
+    has_moved_to_a_new_station
+    card_has_been_touched_out
+    the_journey_will_have_completed
+  end
+
+  it "the journey calculates a fare" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    is_in_a_station_ready_to_go
+    card_has_been_touched_in
+    has_moved_to_a_new_station
+    card_has_been_touched_out
+    the_journey_will_calculate_the_fare
+  end
+
+  it "the journey calculates the correct fare across zones" do
+    given_a_user_has_a_new_card
+    the_card_has_been_topped_up
+    at_bank_ready_to_go
+    card_has_been_touched_in_at_bank
+    has_travelled_to_chesham
+    card_has_been_touched_out_at_chesham
+    the_journey_calculates_the_fare_across_zones
+  end
 
   it "shows the journey history of an oystercard" do
     oyster = Oystercard.new
@@ -175,9 +161,17 @@ describe "Oystercard feature tests" do
     oyster.touch_in(peckham)
     oyster.touch_out(whitechapel)
 
-    p oyster.journey_log
+    oyster.journey_log
   end
 
+end
+
+def at_bank_ready_to_go
+  @bank = Station.new('Bank', 1)
+end
+
+def has_travelled_to_chesham
+  @chesham = Station.new('Chesham', 9)
 end
 
 def given_a_user_has_a_new_card
@@ -259,7 +253,7 @@ def i_want_to_see_my_journey_history
 end
 
 def it_has_an_empty_journey_history
-  expect(@oc.journeys).to eq []
+  expect(@oc.journey_log.journeys).to eq []
 end
 
 def given_that_we_have_a_station
@@ -283,9 +277,21 @@ def the_card_should_be_charged_a_penalty_on_touch_out
 end
 
 def the_journey_will_have_completed
-  expect(@journey.complete?).to eq true
+  expect(@oc.journey_log.journeys.last.complete?).to eq true
 end
 
 def the_journey_will_calculate_the_fare
-  expect(@journey.fare).to eq Journey::MINIMUM_FARE
+  expect(@oc.journey_log.journeys.last.fare).to eq Journey::MINIMUM_FARE + 100
+end
+
+def the_journey_calculates_the_fare_across_zones
+  expect(@oc.balance).to eq 100
+end
+
+def card_has_been_touched_in_at_bank
+    @oc.touch_in(@bank)
+end
+
+def card_has_been_touched_out_at_chesham
+    @oc.touch_out(@chesham)
 end

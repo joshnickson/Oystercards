@@ -5,7 +5,7 @@ class Journey
   attr_accessor :in_s, :out
 
   def fare
-    complete? ? MINIMUM_FARE : PENALTY
+    complete? ? MINIMUM_FARE + (in_s.zone - out.zone).abs * 100  : PENALTY
   end
 
   def complete?

@@ -39,7 +39,7 @@ describe JourneyLog do
     it 'creates a new journey if there was no touch in' do
       allow(journey).to receive(:complete?).and_return(false)
       subject.finish(out_station)
-      p subject.journeys
+      subject.journeys
       expect(subject.journeys.last).to eq journey
     end
 
